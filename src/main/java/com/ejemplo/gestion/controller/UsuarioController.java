@@ -49,6 +49,7 @@ public class UsuarioController {
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
 
         try {
+
             Usuario u = usuarioService.login(
                     usuario.getEmail(),
                     usuario.getPassword()
@@ -57,6 +58,7 @@ public class UsuarioController {
             return ResponseEntity.ok(u);
 
         } catch (Exception e) {
+
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -68,9 +70,11 @@ public class UsuarioController {
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
 
         try {
+
             return ResponseEntity.ok(usuarioService.buscarPorId(id));
 
         } catch (Exception e) {
+
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -85,9 +89,13 @@ public class UsuarioController {
     ) {
 
         try {
-            return ResponseEntity.ok(usuarioService.actualizar(id, usuario));
+
+            return ResponseEntity.ok(
+                    usuarioService.actualizar(id, usuario)
+            );
 
         } catch (Exception e) {
+
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -99,9 +107,13 @@ public class UsuarioController {
     public ResponseEntity<?> inactivar(@PathVariable Long id) {
 
         try {
-            return ResponseEntity.ok(usuarioService.inactivar(id));
+
+            return ResponseEntity.ok(
+                    usuarioService.inactivar(id)
+            );
 
         } catch (Exception e) {
+
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -116,11 +128,37 @@ public class UsuarioController {
 
             usuarioService.eliminar(id);
 
-            return ResponseEntity.ok("Usuario eliminado correctamente");
+            return ResponseEntity.ok(
+                    "Usuario eliminado correctamente"
+            );
 
         } catch (Exception e) {
 
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // =========================
+    // USUARIOS ACTIVOS
+    // =========================
+    @GetMapping("/activos")
+    public ResponseEntity<List<Usuario>> usuariosActivos() {
+
+        return ResponseEntity.ok(
+                usuarioService.usuariosActivos()
+        );
+    }
+
+    // =========================
+    // BUSCAR POR NOMBRE
+    // =========================
+    @GetMapping("/buscar/{nombre}")
+    public ResponseEntity<List<Usuario>> buscarPorNombre(
+            @PathVariable String nombre
+    ) {
+
+        return ResponseEntity.ok(
+                usuarioService.buscarPorNombre(nombre)
+        );
     }
 }
