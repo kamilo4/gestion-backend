@@ -67,6 +67,7 @@ public class UsuarioService {
     // BUSCAR POR ID
     // =========================
     public Usuario buscarPorId(Long id) {
+
         return repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
@@ -110,5 +111,21 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         repo.delete(u);
+    }
+
+    // =========================
+    // USUARIOS ACTIVOS
+    // =========================
+    public List<Usuario> usuariosActivos() {
+
+        return repo.findByActivo(true);
+    }
+
+    // =========================
+    // BUSCAR POR NOMBRE
+    // =========================
+    public List<Usuario> buscarPorNombre(String nombre) {
+
+        return repo.findByNombreContainingIgnoreCase(nombre);
     }
 }
