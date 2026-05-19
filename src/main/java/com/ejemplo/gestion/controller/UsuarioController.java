@@ -2,59 +2,125 @@ package com.ejemplo.gestion.controller;
 
 import com.ejemplo.gestion.entity.Usuario;
 import com.ejemplo.gestion.service.UsuarioService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")
+@CrossOrigin("*")
 public class UsuarioController {
 
-    private final UsuarioService service;
+    private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService service) {
-        this.service = service;
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-    // ✅ LISTAR USUARIOS
-    @GetMapping
-    public List<Usuario> listar() {
-        return service.listar();
-    }
-
-    // ✅ BUSCAR POR ID
-    @GetMapping("/{id}")
-    public Usuario buscarPorId(@PathVariable Long id) {
-        return service.buscarPorId(id);
-    }
-
-    // ✅ REGISTRO
+    // =========================
+    // REGISTRAR USUARIO
+    // =========================
     @PostMapping("/registro")
-    public Usuario registrar(@RequestBody Usuario usuario) {
-        return service.registrar(usuario);
+    public ResponseEntity<?> registrar(@RequestBody Usuario usuario) {
+
+        try {
+            Usuario nuevo = usuarioService.registrar(usuario);
+            return ResponseEntity.ok(nuevo);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    // ✅ LOGIN
+    // =========================
+    // LISTAR USUARIOS
+    // =========================
+    @GetMapping
+    public ResponseEntity<List<Usuario>> listar() {
+
+        return ResponseEntity.ok(usuarioService.listar());
+    }
+
+    // =========================
+    // LOGIN
+    // =========================
     @PostMapping("/login")
-    public Usuario login(@RequestBody Usuario usuario) {
-        return service.login(usuario.getEmail(), usuario.getPassword());
+    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
+
+        try {
+            Usuario u = usuarioService.login(
+                    usuario.getEmail(),
+                    usuario.getPassword()
+            );
+
+            return ResponseEntity.ok(u);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    // ✅ ACTUALIZAR
+    // =========================
+    // BUSCAR POR ID
+    // =========================
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
+
+        try {
+            return ResponseEntity.ok(usuarioService.buscarPorId(id));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // =========================
+    // ACTUALIZAR USUARIO
+    // =========================
     @PutMapping("/{id}")
-    public Usuario actualizar(@PathVariable Long id, @RequestBody Usuario usuario) {
-        return service.actualizar(id, usuario);
+    public ResponseEntity<?> actualizar(
+            @PathVariable Long id,
+            @RequestBody Usuario usuario
+    ) {
+
+        try {
+            return ResponseEntity.ok(usuarioService.actualizar(id, usuario));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    // ✅ INACTIVAR
+    // =========================
+    // INACTIVAR USUARIO
+    // =========================
     @PutMapping("/inactivar/{id}")
-    public Usuario inactivar(@PathVariable Long id) {
-        return service.inactivar(id);
+    public ResponseEntity<?> inactivar(@PathVariable Long id) {
+
+        try {
+            return ResponseEntity.ok(usuarioService.inactivar(id));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    // ✅ ELIMINAR
+    // =========================
+    // ELIMINAR USUARIO
+    // =========================
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
-        service.eliminar(id);
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+
+        try {
+
+            usuarioService.eliminar(id);
+
+            return ResponseEntity.ok("Usuario eliminado correctamente");
+
+        } catch (Exception e) {
+
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
